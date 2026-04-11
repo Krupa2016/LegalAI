@@ -38,16 +38,16 @@ class SemanticSearchService:
             query_vector = self.model.encode(query, convert_to_numpy=True).tolist()
             
             # Request Top-K context chunks from Qdrant Cloud
-            search_result = self.client.search(
+            search_result = self.client.query_points(
                 collection_name=self.collection_name,
-                query_vector=query_vector,
+                query=query_vector,
                 limit=top_k,
                 with_payload=True
             )
             
             # Format results
             context_results = []
-            for hit in search_result:
+            for hit in search_result.points:
                 payload = hit.payload
                 context_results.append({
                     "score": hit.score,
